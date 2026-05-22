@@ -29,46 +29,7 @@ import {
   Menu,
   X,
   BookOpen,
-  Award,
-  Smile,
-  FileText,
-  UserCheck,
 } from "lucide-react";
-
-const quizQuestions = [
-  {
-    q: "Ойрын үед та хэр зэрэг амархан бухимдаж, уурлаж байна вэ?",
-    options: [
-      { text: "Бараг үгүй / Хэвийн", score: 0 },
-      { text: "Заримдаа / Дунд зэрэг", score: 1 },
-      { text: "Маш их / Тогтмол", score: 2 },
-    ],
-  },
-  {
-    q: "Шөнө нойр хулжих, эсвэл ойр ойрхон сэрж сэтгэл түгших шинж тэмдэг илэрч байна уу?",
-    options: [
-      { text: "Илэрдэггүй", score: 0 },
-      { text: "Хааяа илэрдэг", score: 1 },
-      { text: "Байнга илэрдэг", score: 2 },
-    ],
-  },
-  {
-    q: "Анхаарал төвлөрөх чадвар буурч, ажил/хичээлийн бүтээмж муудсан уу?",
-    options: [
-      { text: "Үгүй, хэвийн байгаа", score: 0 },
-      { text: "Бага зэрэг нөлөөлсөн", score: 1 },
-      { text: "Тийм, маш их нөлөөлсөн", score: 2 },
-    ],
-  },
-  {
-    q: "Сэтгэл зүйн дарамтаас үүдэлтэй бие махбодын өөрчлөлт (булчин чангарах, зүрх дэлсэх) илэрч байна уу?",
-    options: [
-      { text: "Үгүй, илэрдэггүй", score: 0 },
-      { text: "Заримдаа илэрдэг", score: 1 },
-      { text: "Байнга илэрдэг", score: 2 },
-    ],
-  },
-];
 
 // Information config for Mega Menu / Router list
 const topicPages = [
@@ -147,64 +108,6 @@ function App() {
       return [];
     }
   });
-
-  // Quiz states
-  const [quizActive, setQuizActive] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [quizScore, setQuizScore] = useState(0);
-  const [quizResult, setQuizResult] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("stress_quiz_result")) || null;
-    } catch {
-      return null;
-    }
-  });
-
-  // Certificate state
-  const [studentName, setStudentName] = useState(() => {
-    return localStorage.getItem("student_name") || "";
-  });
-  const [showCertificate, setShowCertificate] = useState(false);
-
-  const handleQuizAnswer = (points) => {
-    const nextScore = quizScore + points;
-    setQuizScore(nextScore);
-
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      let level = "Бага стресс";
-      let desc =
-        "Таны стрессийн түвшин одоогоор хэвийн хэмжээнд байна. Эрүүл зөв дадал хэвшлийг хадгалж, сэргийлэх модулийг уншихыг зөвлөж байна.";
-      let recPath = "/prevention";
-      let recTitle = "Модуль 05: Урьдчилан сэргийлэх";
-
-      if (nextScore >= 6) {
-        level = "Өндөр стресс";
-        desc =
-          "Танд маш өндөр стресс, ачаалал хуримтлагджээ. Амьсгалын интерактив дасгал болон даван туулах аргуудыг нэн даруй хэрэгжүүлэхийг зөвлөж байна.";
-        recPath = "/breathing";
-        recTitle = "Модуль 06: Амьсгалын дасгал";
-      } else if (nextScore >= 3) {
-        level = "Дунд зэргийн стресс";
-        desc =
-          "Танд тодорхой хэмжээний сэтгэл зүйн дарамт, стресс үүссэн байна. Стресс менежмент болон зохицуулах аргуудыг судалж эхлээрэй.";
-        recPath = "/management";
-        recTitle = "Модуль 02: Стресс зохицуулалт";
-      }
-
-      const result = { level, desc, recPath, recTitle, score: nextScore };
-      setQuizResult(result);
-      localStorage.setItem("stress_quiz_result", JSON.stringify(result));
-      setQuizActive(false);
-    }
-  };
-
-  const resetQuiz = () => {
-    setQuizActive(true);
-    setCurrentQuestion(0);
-    setQuizScore(0);
-  };
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -422,8 +325,8 @@ function App() {
                 </div>
                 <p className="dp-slogan">
                   {progressPercent === 100
-                    ? "Баяр хүргэе! Та стресс бууруулах хөтөлбөрийг 100% судалж дуусгалаа. Сертификатаа татаж авна уу."
-                    : "Сургалтын дараах модулиудыг судалж, стресс менежментийн сертификатаа аваарай."}
+                    ? "Баяр хүргэе! Та стресс бууруулах хөтөлбөрийг 100% судалж дуусгалаа."
+                    : "Сургалтын дараах модулиудыг судалж, явцаа үргэлжлүүлээрэй."}
                 </p>
               </div>
 
@@ -491,8 +394,8 @@ function App() {
                       Стресс Менежмент & Сэтгэл Зүйн Эрүүл Мэнд
                     </h1>
                     <p className="home-description">
-                      Шинжлэх ухааны үндэслэлтэй арга зүй, интерактив сорил
-                      болон дасгалуудаар дамжуулан сэтгэл зүйн тэсвэр хатуужлаа
+                      Шинжлэх ухааны үндэслэлтэй арга зүй, интерактив
+                      дасгалуудаар дамжуулан сэтгэл зүйн тэсвэр хатуужлаа
                       нэмэгдүүлж, өдөр тутмын стрессээ зөв удирдан сураарай.
                     </p>
                     <div className="hero-cta-group">
@@ -502,149 +405,6 @@ function App() {
                       >
                         1-р Модулиас эхлэх <ChevronRight size={20} />
                       </button>
-                    </div>
-                  </div>
-
-                  {/* Interactive Assessment & Course Progress Hub */}
-                  <div className="course-hub-grid">
-                    <div className="hub-card">
-                      <div className="hub-card-header">
-                        <FileText
-                          size={22}
-                          style={{ color: "var(--primary)" }}
-                        />
-                        <h3>Стрессийн түвшин тодорхойлох сорил</h3>
-                      </div>
-                      <div
-                        className={`hub-card-body ${quizActive ? "quiz-active-body" : ""}`}
-                      >
-                        {quizActive ? (
-                          <>
-                            <span className="quiz-progress-lbl">
-                              Асуулт {currentQuestion + 1} /{" "}
-                              {quizQuestions.length}
-                            </span>
-                            <p className="quiz-question-txt">
-                              {quizQuestions[currentQuestion].q}
-                            </p>
-                            <div className="quiz-options-list">
-                              {quizQuestions[currentQuestion].options.map(
-                                (opt, idx) => (
-                                  <button
-                                    key={idx}
-                                    className="quiz-opt-btn"
-                                    onClick={() => handleQuizAnswer(opt.score)}
-                                  >
-                                    {opt.text}
-                                  </button>
-                                ),
-                              )}
-                            </div>
-                          </>
-                        ) : quizResult ? (
-                          <>
-                            <div className="result-badge-container">
-                              Үр дүн:
-                              <span
-                                className={`result-level-badge ${
-                                  quizResult.score >= 6
-                                    ? "high-stress"
-                                    : quizResult.score >= 3
-                                      ? "mid-stress"
-                                      : "low-stress"
-                                }`}
-                              >
-                                {quizResult.level}
-                              </span>
-                            </div>
-                            <p className="quiz-result-desc">{quizResult.desc}</p>
-                            <div className="quiz-recommendation-box">
-                              <span className="rec-lbl">Зөвлөмж</span>
-                              <button
-                                className="rec-btn-link"
-                                onClick={() => navigateTo(quizResult.recPath)}
-                              >
-                                {quizResult.recTitle}{" "}
-                                <ChevronRight size={16} />
-                              </button>
-                            </div>
-                            <button
-                              className="sec-btn"
-                              onClick={resetQuiz}
-                              style={{ marginTop: "1rem" }}
-                            >
-                              Дахин өгөх
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <p>
-                              4 асуултаар стрессийн түвшинг тодоройлж, танд
-                              тохирсон модульд чиглүүлнэ.
-                            </p>
-                            <button className="cta-btn" onClick={resetQuiz}>
-                              Сорил эхлүүлэх <ChevronRight size={18} />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="hub-card">
-                      <div className="hub-card-header">
-                        <Award size={22} style={{ color: "var(--accent)" }} />
-                        <h3>Сургалтын сертификат</h3>
-                      </div>
-                      <div className="hub-card-body">
-                        <div className="cert-progress-wrapper">
-                          <div className="cert-progress-meta">
-                            <span>Модулийн явц</span>
-                            <span>
-                              {completedTopicsCount} / {totalTopics}
-                            </span>
-                          </div>
-                          <div className="cert-progress-bar-bg">
-                            <div
-                              className="cert-progress-bar-fill"
-                              style={{ width: `${progressPercent}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                        {progressPercent === 100 ? (
-                          <div className="cert-unlocked-msg">
-                            <p className="unlocked-lbl">
-                              Сертификат нээгдлээ!
-                            </p>
-                            <div className="name-input-wrapper">
-                              <input
-                                className="student-name-input"
-                                placeholder="Суралцагчийн нэрээ оруулна уу"
-                                value={studentName}
-                                onChange={(e) => {
-                                  setStudentName(e.target.value);
-                                  localStorage.setItem(
-                                    "student_name",
-                                    e.target.value,
-                                  );
-                                }}
-                              />
-                            </div>
-                            <button
-                              className="cta-btn"
-                              onClick={() => setShowCertificate(true)}
-                            >
-                              Сертификат харах <Award size={18} />
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="cert-locked-msg">
-                            <p>
-                              Бүх 6 модулиудыг судалсны дараа төгсөлтийн
-                              сертификатаа авах боломжтой.
-                            </p>
-                          </div>
-                        )}
-                      </div>
                     </div>
                   </div>
 
@@ -690,117 +450,7 @@ function App() {
                       </div>
                     ))}
                   </div>
-
-                  {/* Instructors & Why this Course Section */}
-                  <div className="instructors-section">
-                    <div className="ins-header">
-                      <span className="section-tag">
-                        <UserCheck size={16} /> Мэргэжилтэн багш нар
-                      </span>
-                      <h2 className="ins-title">Хэн заах вэ?</h2>
-                    </div>
-                    <div className="ins-grid">
-                      <div className="ins-card">
-                        <div className="ins-avatar-placeholder">
-                          <Smile size={28} />
-                        </div>
-                        <div className="ins-info">
-                          <h4>Доктор Г. Ариунзаяа</h4>
-                          <p className="ins-role">Сэтгэл зүйн эмч</p>
-                          <p className="ins-bio">
-                            15+ жилийн туршлагатай сэтгэл зүйн эмч. Стресс
-                            менежмент, когнитив зан үйлийн эмчилгээний чиглэлээр
-                            мэргэшсэн.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="ins-card">
-                        <div className="ins-avatar-placeholder">
-                          <Brain size={28} />
-                        </div>
-                        <div className="ins-info">
-                          <h4>Проф. Б. Энхтуяа</h4>
-                          <p className="ins-role">Сэтгэл зүйн судлаач</p>
-                          <p className="ins-bio">
-                            МУИС-ийн Сэтгэл зүй, Боловсролын Сургалтын
-                            Төвийн профессор. Стрессийн биологийн механизм,
-                            урьдчилан сэргийлэх арга зүйн судалгаа хөтөлдөг.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-
-                {/* Certificate Modal Lightbox */}
-                <AnimatePresence>
-                  {showCertificate && (
-                    <motion.div
-                      className="modal-overlay"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      onClick={() => setShowCertificate(false)}
-                    >
-                      <motion.div
-                        className="certificate-modal-content"
-                        initial={{ scale: 0.9, y: 20 }}
-                        animate={{ scale: 1, y: 0 }}
-                        exit={{ scale: 0.9, y: 20 }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          className="modal-close-btn"
-                          onClick={() => setShowCertificate(false)}
-                        >
-                          <X size={24} />
-                        </button>
-
-                        <div className="certificate-frame">
-                          <div className="cert-border-double">
-                            <div className="cert-body-inner">
-                              <div className="cert-header">
-                                <Award size={56} className="cert-medal-icon" />
-                                <h2>ТӨГСӨЛТИЙН СЕРТИФИКАТ</h2>
-                                <p className="cert-sub">
-                                  STRESS.MN ОНЛАЙН СУРГАЛТЫН АКАДЕМИ
-                                </p>
-                              </div>
-
-                              <div className="cert-content">
-                                <p className="cert-txt-light">
-                                  Энэхүү гэрчилгээг стресс зохицуулалтын цогц
-                                  курсыг амжилттай судалж төгссөн
-                                </p>
-                                <h1 className="cert-student-name">
-                                  {studentName || "[Суралцагчийн нэр]"}
-                                </h1>
-                                <p className="cert-txt-light">
-                                  анд стресс менежмент болон сэтгэл зүйн тэсвэр
-                                  хатуужлын үндсэн онол, интерактив аргуудыг
-                                  амжилттай эзэмшсэн тул олгов.
-                                </p>
-                              </div>
-
-                              <div className="cert-footer">
-                                <div className="cert-sign">
-                                  <div className="sign-line"></div>
-                                  <p>Хөтөлбөрийн удирдагч</p>
-                                  <span>Доктор Г. Ариунзаяа</span>
-                                </div>
-                                <div className="cert-date">
-                                  <div className="sign-line"></div>
-                                  <p>Олгосон огноо</p>
-                                  <span>{new Date().toLocaleDateString()}</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </motion.div>
             }
           />
