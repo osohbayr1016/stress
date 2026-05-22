@@ -1,0 +1,1045 @@
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  Link,
+} from "react-router-dom";
+import {
+  Brain,
+  Clock,
+  ShieldCheck,
+  Activity,
+  HeartHandshake,
+  Sparkles,
+  Zap,
+  Users,
+  Target,
+  CloudRain,
+  Compass,
+  TrendingUp,
+  AlertTriangle,
+  Lightbulb,
+  CheckCircle2,
+  ChevronRight,
+  ChevronLeft,
+  Home,
+  Menu,
+  X,
+  BookOpen,
+} from "lucide-react";
+import "./App.css";
+
+// Information config for Mega Menu / Router list
+const topicPages = [
+  {
+    id: "definition",
+    path: "/definition",
+    num: "01",
+    title: "Стресс гэж юу вэ?",
+    desc: 'Аюул болон дарамтад үзүүлж буй бидний бие махбодын "Тэмц эсвэл Зугт" биологийн хамгаалалтын механизм.',
+    icon: <Brain size={22} />,
+    duration: "2 мин унших",
+  },
+  {
+    id: "management",
+    path: "/management",
+    num: "02",
+    title: "Стресс зохицуулалт",
+    desc: "Стрессийг удирдах, түүний амьдрал болон эрүүл мэндэд үзүүлэх өндөр ач холбогдлууд.",
+    icon: <HeartHandshake size={22} />,
+    duration: "3 мин унших",
+  },
+  {
+    id: "causes",
+    path: "/causes",
+    num: "03",
+    title: "Стресс үүсэх шалтгаан",
+    desc: "Ажил, сургууль, нийгэм, хувийн хүчин зүйл болон орчны стресс үүсгэгч хүчин зүйлс.",
+    icon: <Zap size={22} />,
+    duration: "3 мин унших",
+  },
+  {
+    id: "duration",
+    path: "/duration",
+    num: "04",
+    title: "Стресс үргэлжлэх хугацаа",
+    desc: "Түр зуурын цочмог стресс (Acute) болон удаан хугацааны архаг стресс (Chronic) ялгаа, хор нөлөө.",
+    icon: <Clock size={22} />,
+    duration: "2 мин унших",
+  },
+  {
+    id: "prevention",
+    path: "/prevention",
+    num: "05",
+    title: "Урьдчилан сэргийлэх",
+    desc: "Цагийн менежмент, дасгал хөдөлгөөн, татгалзаж сурах болон эрүүл амьдралын зөв хэвшил.",
+    icon: <ShieldCheck size={22} />,
+    duration: "3 мин унших",
+  },
+  {
+    id: "breathing",
+    path: "/breathing",
+    num: "06",
+    title: "Амьсгалын дасгал",
+    desc: "4-7-8 амьсгалын дасгалаар зүрхний цохилтыг удаашруулж, бие махбодоо хэдхэн минутад тайвшруулах.",
+    icon: <Compass size={22} />,
+    duration: "4 мин дасгал",
+  },
+];
+
+const pagesOrder = [
+  "/",
+  "/definition",
+  "/management",
+  "/causes",
+  "/duration",
+  "/prevention",
+  "/breathing",
+];
+
+function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [visitedPages, setVisitedPages] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("visited_pages") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Scroll to top and track visited page on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    const currentPath = location.pathname;
+    const isTopic = topicPages.some((page) => page.path === currentPath);
+    if (isTopic && !visitedPages.includes(currentPath)) {
+      const updated = [...visitedPages, currentPath];
+      setVisitedPages(updated);
+      localStorage.setItem("visited_pages", JSON.stringify(updated));
+    }
+  }, [location.pathname]);
+
+  // Page Routing Navigation Helper
+  const navigateTo = (path) => {
+    navigate(path);
+    setMenuOpen(false);
+  };
+
+  const getPageInfo = (path) => {
+    const idx = pagesOrder.indexOf(path);
+    return {
+      index: idx,
+      next: idx < pagesOrder.length - 1 ? pagesOrder[idx + 1] : null,
+      prev: idx > 0 ? pagesOrder[idx - 1] : null,
+    };
+  };
+
+  const { next: nextPage, prev: prevPage } = getPageInfo(location.pathname);
+
+  const getNavProgress = () => {
+    const idx = pagesOrder.indexOf(location.pathname);
+    if (idx === -1) return 0;
+    return (idx / (pagesOrder.length - 1)) * 100;
+  };
+
+  // Visited progress metrics
+  const totalTopics = topicPages.length;
+  const completedTopicsCount = visitedPages.filter((p) =>
+    topicPages.some((tp) => tp.path === p),
+  ).length;
+  const progressPercent = Math.round(
+    (completedTopicsCount / totalTopics) * 100,
+  );
+
+  // Shared subpage footer navigator
+  const renderPageFooter = () => {
+    return (
+      <div className="page-navigation-footer">
+        <button className="sec-btn" onClick={() => navigateTo(prevPage || "/")}>
+          <ChevronLeft size={18} /> Өмнөх сэдэв
+        </button>
+        <button className="sec-btn" onClick={() => navigateTo("/")}>
+          <Home size={16} /> Самбар руу буцах
+        </button>
+        {nextPage ? (
+          <button className="cta-btn" onClick={() => navigateTo(nextPage)}>
+            Дараагийн сэдэв <ChevronRight size={18} />
+          </button>
+        ) : (
+          <button className="cta-btn" onClick={() => navigateTo("/")}>
+            Дуусгах (Эхлэл рүү) <ChevronRight size={18} />
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  // Animation variants
+  const pageVariants = {
+    initial: { opacity: 0, x: 20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -20 },
+    transition: { duration: 0.4, ease: "easeOut" },
+  };
+
+  return (
+    <div className="app-container">
+      {/* Background Animated Gradient Mesh */}
+      <div className="bg-mesh">
+        <div className="mesh-circle mesh-circle-1"></div>
+        <div className="mesh-circle mesh-circle-2"></div>
+        <div className="mesh-circle mesh-circle-3"></div>
+      </div>
+
+      {/* Sticky Header Navbar */}
+      <nav className="navbar">
+        <div className="nav-logo" onClick={() => navigateTo("/")}>
+          <Brain size={26} />
+          <span>STRESS.mn</span>
+        </div>
+        <div className="nav-links">
+          <button
+            className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
+            onClick={() => navigateTo("/")}
+          >
+            Хянах самбар
+          </button>
+          {topicPages.map((page) => (
+            <button
+              key={page.id}
+              className={`nav-link ${location.pathname === page.path ? "active" : ""}`}
+              onClick={() => navigateTo(page.path)}
+            >
+              {page.title}
+            </button>
+          ))}
+        </div>
+        <div className="nav-controls">
+          {/* Informative Progress Hub Badge */}
+          <div className="nav-progress-badge" onClick={() => setMenuOpen(true)}>
+            <div className="progress-badge-ring">
+              <svg width="28" height="28" viewBox="0 0 36 36">
+                <path
+                  className="ring-bg"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.06)"
+                  strokeWidth="3"
+                />
+                <path
+                  className="ring-fill"
+                  strokeDasharray={`${progressPercent}, 100`}
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="var(--accent)"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="progress-badge-text">{progressPercent}%</span>
+            </div>
+          </div>
+
+          {/* Hamburger Drawer Toggle Button */}
+          <button
+            className="menu-toggle-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle Menu"
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+        {/* Dynamic Progress Bar */}
+        <div className="progress-container">
+          <div
+            className="progress-bar"
+            style={{ width: `${getNavProgress()}%` }}
+          ></div>
+        </div>
+      </nav>
+
+      {/* INFORMATIVE MEGA DRAWER NAVIGATION */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            {/* Backdrop Blur Overlay */}
+            <motion.div
+              className="drawer-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+            />
+
+            {/* Drawer Container */}
+            <motion.div
+              className="drawer-container"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 380, damping: 38 }}
+            >
+              <div className="drawer-header">
+                <div className="drawer-brand">
+                  <BookOpen size={22} style={{ color: "var(--accent)" }} />
+                  <span>Мэдээллийн Хөтөч</span>
+                </div>
+                <button
+                  className="drawer-close"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Progress Summary Section */}
+              <div className="drawer-progress-box">
+                <div className="dp-meta">
+                  <span className="dp-label">Таны судалсан явц</span>
+                  <span className="dp-count">
+                    {completedTopicsCount} / {totalTopics} сэдэв
+                  </span>
+                </div>
+                <div className="dp-bar-bg">
+                  <div
+                    className="dp-bar-fill"
+                    style={{ width: `${progressPercent}%` }}
+                  ></div>
+                </div>
+                <p className="dp-slogan">
+                  {progressPercent === 100
+                    ? "Баяр хүргэе! Та стрессийн тухай бүх мэдлэгийг судалж дуусгалаа."
+                    : "Сэтгэцийн эрүүл мэнддээ цаг гарган дараах сэдвүүдтэй танилцаарай."}
+                </p>
+              </div>
+
+              {/* Info about the Info Grid */}
+              <div className="drawer-items-list">
+                {topicPages.map((page) => {
+                  const isCurrent = location.pathname === page.path;
+                  const isVisited = visitedPages.includes(page.path);
+
+                  let badgeText = "Уншаагүй";
+                  let badgeClass = "badge-unread";
+                  if (isCurrent) {
+                    badgeText = "Уншиж байна";
+                    badgeClass = "badge-current";
+                  } else if (isVisited) {
+                    badgeText = "Судалсан";
+                    badgeClass = "badge-visited";
+                  }
+
+                  return (
+                    <div
+                      key={page.id}
+                      className={`drawer-card ${isCurrent ? "active" : ""} ${isVisited ? "visited" : ""}`}
+                      onClick={() => navigateTo(page.path)}
+                    >
+                      <div className="dc-header">
+                        <span className="dc-num">{page.num}</span>
+                        <span className="dc-icon-box">{page.icon}</span>
+                        <span className={`dc-badge ${badgeClass}`}>
+                          {badgeText}
+                        </span>
+                      </div>
+                      <div className="dc-body">
+                        <h4 className="dc-title">{page.title}</h4>
+                        <p className="dc-desc">{page.desc}</p>
+                      </div>
+                      <div className="dc-footer">
+                        <span className="dc-time">{page.duration}</span>
+                        <ChevronRight size={14} className="dc-arrow" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Multi-page routing layout area */}
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route
+            path="/"
+            element={
+              <motion.div key="home" className="page-wrapper" {...pageVariants}>
+                <div className="page-container">
+                  {/* Home Dashboard */}
+                  <div className="home-hero">
+                    <span className="home-tag">
+                      <Sparkles size={16} />
+                      Мэдлэгийн төв
+                    </span>
+                    <h1 className="home-title">
+                      Сэтгэл санаа ба Стрессийг танин мэдэхүй
+                    </h1>
+                    <p className="home-description">
+                      Энэхүү интерактив вэбсайт нь танд стрессийн мөн чанар,
+                      үүсэх шалтгаан, урьдчилан сэргийлэлт болон даван туулах
+                      зөвлөгөөнүүдийг эмх цэгцтэйгээр олгох зорилготой. Сэдэв
+                      бүрийг тусгай хуудаснаас дэлгэрэнгүй уншина уу.
+                    </p>
+                  </div>
+
+                  <div className="dashboard-grid">
+                    {topicPages.map((page) => (
+                      <div
+                        key={page.id}
+                        className="db-card"
+                        onClick={() => navigateTo(page.path)}
+                      >
+                        <div className="db-card-image-box">
+                          <span className="db-card-overlay">
+                            {page.num} . Сэдэв
+                          </span>
+                          <img
+                            src={`/${page.id}.png`}
+                            alt={page.title}
+                            className="db-card-image"
+                          />
+                        </div>
+                        <div className="db-card-content">
+                          <h3 className="db-card-title">{page.title}</h3>
+                          <p className="db-card-desc">{page.desc}</p>
+                          <span className="db-card-footer">
+                            Судалж эхлэх ({page.duration}){" "}
+                            <ChevronRight size={16} />
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/definition"
+            element={
+              <motion.div
+                key="definition"
+                className="page-wrapper"
+                {...pageVariants}
+              >
+                <div className="page-container">
+                  <div className="content-grid">
+                    <div className="section-content">
+                      <span className="section-tag">
+                        <Activity size={16} /> Сэдэв 01
+                      </span>
+                      <h1 className="section-title">Стресс гэж юу вэ?</h1>
+                      <p className="section-description">
+                        Стресс гэдэг нь гадны ямар нэгэн ачаалал, дарамтад
+                        үзүүлж буй бидний сэтгэл зүй болон бие махбодын
+                        биологийн хариу үйлдэл юм. Аюул эсвэл хүндрэлтэй
+                        тулгарах үед тархи "Тэмц эсвэл Зугт" (Fight-or-Flight)
+                        горимыг идэвхжүүлж, адреналин болон кортизол дааврыг
+                        цусанд шахдаг. Энэ нь зүрхний цохилт, цусны даралтыг
+                        ихэсгэж, биднийг аюулаас хамгаалахад дайчилж өгдөг
+                        төрөлхийн систем юм.
+                      </p>
+                    </div>
+                    <div className="section-visual-container">
+                      <div className="visual-image-wrapper">
+                        <img
+                          src="/definition.png"
+                          alt="Definition"
+                          className="visual-image"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {renderPageFooter()}
+                </div>
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/management"
+            element={
+              <motion.div
+                key="management"
+                className="page-wrapper"
+                {...pageVariants}
+              >
+                <div className="page-container">
+                  <span className="section-tag">
+                    <HeartHandshake size={16} /> Сэдэв 02
+                  </span>
+                  <h1
+                    className="section-title"
+                    style={{ marginBottom: "2rem" }}
+                  >
+                    Стресс зохицуулалт ба Ач холбогдол
+                  </h1>
+
+                  <div className="management-grid" style={{ marginTop: "0" }}>
+                    <div className="management-card">
+                      <h3 className="management-card-title">
+                        <Compass size={22} /> СТРЕССИЙГ ЗОХИЦУУЛАХ ГЭЖ ЮУ ВЭ?
+                      </h3>
+                      <div className="management-list">
+                        <div className="management-item">
+                          <span className="management-bullet">
+                            <CheckCircle2 size={16} />
+                          </span>
+                          <p>
+                            Стресс нь өдөр тутмын амьдралын шаардлага,
+                            өөрчлөлтөд өгч буй бие махбод болон оюун санааны
+                            хариу үйлдэл бөгөөд түүнийг зөв зохицуулах нь
+                            амьдралын чухал хэсэг юм.
+                          </p>
+                        </div>
+                        <div className="management-item">
+                          <span className="management-bullet">
+                            <CheckCircle2 size={16} />
+                          </span>
+                          <p>
+                            Стресс үргэлж сөрөг байдаггүй, заримдаа зорилгодоо
+                            хүрэх эрч хүч, хөдөлгөх хүч (эерэг хариу үйлдэл)
+                            болдог.
+                          </p>
+                        </div>
+                        <div className="management-item">
+                          <span className="management-bullet">
+                            <CheckCircle2 size={16} />
+                          </span>
+                          <p>
+                            Стрессийг зохицуулах нь түүний шинж тэмдэг,
+                            шалтгааныг тогтоож, даван туулах урт хугацааны
+                            төлөвлөгөө боловсруулахаас эхэлнэ.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="management-card">
+                      <h3 className="management-card-title">
+                        <TrendingUp size={22} /> СТРЕССИЙГ ЗОХИЦУУЛАХ НЬ ЯАГААД
+                        ЧУХАЛ ВЭ?
+                      </h3>
+                      <div className="management-list">
+                        <div className="management-item">
+                          <span className="management-bullet">
+                            <AlertTriangle
+                              size={16}
+                              style={{ color: "#eab308" }}
+                            />
+                          </span>
+                          <p>
+                            Хэт стресс нь хүний зан араншин, эрүүл мэнд,
+                            харилцаа, ажил сурлагад сөрөг нөлөө үзүүлдэг тул
+                            амьдралаа зөв удирдахын тулд зохицуулж сурах
+                            шаардлагатай.
+                          </p>
+                        </div>
+                        <div className="management-item">
+                          <span className="management-bullet">
+                            <AlertTriangle
+                              size={16}
+                              style={{ color: "#ef4444" }}
+                            />
+                          </span>
+                          <p>
+                            Удирдах боломжгүй стресс нь хуримтлагдсаар бие болон
+                            сэтгэцийн хүнд өвчлөл (зүрхний өвчин, сэтгэл гутрал
+                            г.м) үүсгэх эрсдэлтэй.
+                          </p>
+                        </div>
+                        <div className="management-item">
+                          <span className="management-bullet">
+                            <Lightbulb size={16} style={{ color: "#06b6d4" }} />
+                          </span>
+                          <p>
+                            Стрессийг амжилттай зохицуулснаар амьдралыг эерэгээр
+                            харах чадвар болон бүтээлч байдлаа хадгалж үлддэг.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {renderPageFooter()}
+                </div>
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/causes"
+            element={<CausesPage renderPageFooter={renderPageFooter} />}
+          />
+
+          <Route
+            path="/duration"
+            element={<DurationPage renderPageFooter={renderPageFooter} />}
+          />
+
+          <Route
+            path="/prevention"
+            element={
+              <motion.div
+                key="prevention"
+                className="page-wrapper"
+                {...pageVariants}
+              >
+                <div className="content-grid">
+                  <div className="section-content">
+                    <span className="section-tag">
+                      <ShieldCheck size={16} /> Сэдэв 05
+                    </span>
+                    <h1 className="section-title">
+                      Урьдчилан сэргийлэх аргууд
+                    </h1>
+                    <p className="section-description">
+                      Эрүүл дадал хэвшил нь стрессийг хуримтлуулахгүй байхад
+                      хамгийн их тусалдаг. Сэргийлэх үндсэн 4 чиглэл:
+                    </p>
+
+                    <div className="habit-grid">
+                      <div className="habit-item">
+                        <span className="habit-check">
+                          <ShieldCheck size={16} />
+                        </span>
+                        <div className="habit-text">
+                          <h4>Цагийн менежмент</h4>
+                          <p>Ажлуудаа төлөвлөх, ач холбогдлоор нь эрэмбэлэх.</p>
+                        </div>
+                      </div>
+                      <div className="habit-item">
+                        <span className="habit-check">
+                          <ShieldCheck size={16} />
+                        </span>
+                        <div className="habit-text">
+                          <h4>Дасгал хөдөлгөөн</h4>
+                          <p>
+                            Тогтмол алхах, дасгал хийж кортизол дааврыг
+                            бууруулах.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="habit-item">
+                        <span className="habit-check">
+                          <ShieldCheck size={16} />
+                        </span>
+                        <div className="habit-text">
+                          <h4>Татгалзаж сурах</h4>
+                          <p>
+                            Бусдад "Үгүй" гэж хэлж сурах, хэт их үүрэг амлалт
+                            үүрэхгүй байх.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="habit-item">
+                        <span className="habit-check">
+                          <ShieldCheck size={16} />
+                        </span>
+                        <div className="habit-text">
+                          <h4>Нойр ба Хооллолт</h4>
+                          <p>Өдөрт 7-8 цаг тогтмол унтах, эрүүл хооллох.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="section-visual-container">
+                    <div className="visual-image-wrapper">
+                      <img
+                        src="/prevention.png"
+                        alt="Prevention"
+                        className="visual-image"
+                      />
+                    </div>
+                  </div>
+                </div>
+                {renderPageFooter()}
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/breathing"
+            element={<BreathingPage renderPageFooter={renderPageFooter} />}
+          />
+        </Routes>
+      </AnimatePresence>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-text">
+          &copy; {new Date().getFullYear()} STRESS.mn. Бүх эрх хуулиар
+          хамгаалагдсан. Сэтгэцийн эрүүл мэндийн интерактив суваг.
+        </div>
+        <button className="back-to-top" onClick={() => navigateTo("/")}>
+          Хянах самбарт буцах
+        </button>
+      </footer>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// DEDICATED PAGE COMPONENTS WITH INTERNAL STATES
+// ----------------------------------------------------
+
+function CausesPage({ renderPageFooter }) {
+  const [activeCause, setActiveCause] = useState(0);
+
+  const causesDetails = [
+    {
+      title: "Ажил & Хичээлийн ачаалал",
+      icon: <Target className="cause-icon" size={24} />,
+      desc: "Цаг тулсан чухал даалгаврууд, ажлын хэт их шаардлага, амжилтад хүрэх дарамт болон ирээдүйн карьертаа санаа зовних зэрэг нь хамгийн түгээмэл стресс үүсгэгч юм.",
+    },
+    {
+      title: "Нийгмийн харилцаа",
+      icon: <Users className="cause-icon" size={24} />,
+      desc: "Гэр бүл, найз нөхөд, хамт олны дунд үүсэх үл ойлголцол, маргаан, эсвэл нийгмээс тусгаарлагдаж ганцаардах мэдрэмж нь сэтгэл зүйн гүн дарамт үүсгэдэг.",
+    },
+    {
+      title: "Хувийн хүчин зүйлс",
+      icon: <Brain className="cause-icon" size={24} />,
+      desc: "Өөртөө итгэлгүй байдал, хэтэрхий өндөр шаардлага тавьж төгс байхыг тэмүүлэх (perfectionism), бодит бус хүлээлт үүсгэх зэрэг хувь хүний хандлагууд дотоод стрессийг үүсгэдэг.",
+    },
+    {
+      title: "Орчин тойрон",
+      icon: <CloudRain className="cause-icon" size={24} />,
+      desc: "Дуу чимээний бохирдол, агаарын бохирдол, замын түгжрэл, орон байрны тохь тухгүй байдал болон хүрээлэн буй орчны таагүй уур амьсгал нь биднийг аажмаар сульдуулдаг.",
+    },
+  ];
+
+  const pageVariants = {
+    initial: { opacity: 0, x: 20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -20 },
+    transition: { duration: 0.4, ease: "easeOut" },
+  };
+
+  return (
+    <motion.div key="causes" className="page-wrapper" {...pageVariants}>
+      <div className="page-container">
+        <div className="content-grid">
+          <div className="section-content">
+            <span className="section-tag">
+              <AlertTriangle size={16} /> Сэдэв 03
+            </span>
+            <h1 className="section-title">Стресс юунаас болж үүсдэг вэ?</h1>
+            <p className="section-description">
+              Стресс үүсгэгчийг "Стрессорууд" гэдэг. Доорх картууд дээр дарж,
+              тэдгээрийн дэлгэрэнгүй шалтгаануудыг баруун талын 3D зурагтай
+              холбон судална уу.
+            </p>
+
+            <div className="causes-grid">
+              {causesDetails.map((cause, idx) => (
+                <div
+                  key={idx}
+                  className={`cause-card ${idx === activeCause ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveCause(idx);
+                  }}
+                >
+                  <div className="cause-header">
+                    <span className="cause-icon-box">{cause.icon}</span>
+                    <h4>{cause.title}</h4>
+                  </div>
+                  <p className="cause-desc">{cause.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="section-visual-container">
+            <div className="visual-image-wrapper">
+              <img
+                src="/causes.png"
+                alt="Causes Visual"
+                className="visual-image"
+                style={{ filter: `hue-rotate(${activeCause * 45}deg)` }}
+              />
+            </div>
+          </div>
+        </div>
+        {renderPageFooter()}
+      </div>
+    </motion.div>
+  );
+}
+
+function DurationPage({ renderPageFooter }) {
+  const [durationTab, setDurationTab] = useState("acute");
+
+  const pageVariants = {
+    initial: { opacity: 0, x: 20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -20 },
+    transition: { duration: 0.4, ease: "easeOut" },
+  };
+
+  return (
+    <motion.div key="duration" className="page-wrapper" {...pageVariants}>
+      <div className="page-container">
+        <div className="content-grid">
+          <div className="section-content">
+            <span className="section-tag">
+              <Clock size={16} /> Сэдэв 04
+            </span>
+            <h1 className="section-title">Стресс хэр удаан үргэлжилдэг вэ?</h1>
+            <p className="section-description">
+              Стрессийг үргэлжлэх хугацаагаар нь хоёр ангилдаг. Төрлийг сонгон
+              эрүүл мэндийн нөлөөг уншина уу.
+            </p>
+
+            <div className="duration-toggle">
+              <button
+                className={`toggle-btn ${durationTab === "acute" ? "active" : ""}`}
+                onClick={() => {
+                  setDurationTab("acute");
+                }}
+              >
+                Цочмог стресс (Acute)
+              </button>
+              <button
+                className={`toggle-btn ${durationTab === "chronic" ? "active" : ""}`}
+                onClick={() => {
+                  setDurationTab("chronic");
+                }}
+              >
+                Архаг стресс (Chronic)
+              </button>
+            </div>
+
+            <div className="duration-details">
+              {durationTab === "acute" ? (
+                <div>
+                  <div className="duration-item">
+                    <span className="duration-bullet">
+                      <Clock size={16} />
+                    </span>
+                    <div className="duration-item-text">
+                      <h4>Түр зуурын үргэлжлэх хугацаа</h4>
+                      <p>
+                        Хэдэн минутаас хэдэн цаг. Илтгэл, шалгалт зэрэг
+                        нөхцөлүүд дуусахад бие эргээд хэвийн болдог.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="duration-item" style={{ marginTop: "1rem" }}>
+                    <span className="duration-bullet">
+                      <Zap size={16} />
+                    </span>
+                    <div className="duration-item-text">
+                      <h4>Илрэх шинж тэмдэг</h4>
+                      <p>
+                        Зүрхний хурдан цохилт, гар хөлрөх, ам хуурайших, богино
+                        хугацааны сандрал.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="duration-item">
+                    <span className="duration-bullet">
+                      <Clock size={16} />
+                    </span>
+                    <div className="duration-item-text">
+                      <h4>Урт хугацааны үргэлжлэх хугацаа</h4>
+                      <p>
+                        Хэдэн сараас хэдэн жил. Санхүүгийн асуудал, гэр бүлийн
+                        урт хугацааны маргаанаас үүснэ.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="duration-item" style={{ marginTop: "1rem" }}>
+                    <span className="duration-bullet">
+                      <Zap size={16} />
+                    </span>
+                    <div className="duration-item-text">
+                      <h4>Эрүүл мэндийн хор уршиг</h4>
+                      <p>
+                        Дархлааг маш ихээр сулруулна. Цусны даралт ихсэх, зүрх
+                        судасны өвчлөл, сэтгэл гутрал.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="section-visual-container">
+            <div className="visual-image-wrapper">
+              <img
+                src="/duration.png"
+                alt="Duration Visual"
+                className="visual-image"
+                style={{
+                  transform:
+                    durationTab === "chronic"
+                      ? "rotate(180deg) scale(1.05)"
+                      : "rotate(0deg) scale(1.05)",
+                  transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        {renderPageFooter()}
+      </div>
+    </motion.div>
+  );
+}
+
+function BreathingPage({ renderPageFooter }) {
+  const [breathingState, setBreathingState] = useState("idle"); // idle, inhale, hold, exhale
+  const [breathTimer, setBreathTimer] = useState(0);
+  const breathingInterval = useRef(null);
+
+  const startBreathing = () => {
+    if (breathingState !== "idle") {
+      clearInterval(breathingInterval.current);
+      setBreathingState("idle");
+      setBreathTimer(0);
+      return;
+    }
+    setBreathingState("inhale");
+    setBreathTimer(4);
+  };
+
+  useEffect(() => {
+    if (breathingState === "idle") {
+      if (breathingInterval.current) clearInterval(breathingInterval.current);
+      return;
+    }
+
+    breathingInterval.current = setInterval(() => {
+      setBreathTimer((prev) => {
+        if (prev <= 1) {
+          if (breathingState === "inhale") {
+            setBreathingState("hold");
+            return 7;
+          } else if (breathingState === "hold") {
+            setBreathingState("exhale");
+            return 8;
+          } else if (breathingState === "exhale") {
+            setBreathingState("inhale");
+            return 4;
+          }
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(breathingInterval.current);
+  }, [breathingState]);
+
+  const pageVariants = {
+    initial: { opacity: 0, x: 20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -20 },
+    transition: { duration: 0.4, ease: "easeOut" },
+  };
+
+  return (
+    <motion.div key="breathing" className="page-wrapper" {...pageVariants}>
+      <div className="page-container">
+        <div className="content-grid">
+          <div className="section-content">
+            <span className="section-tag">
+              <Compass size={16} /> Интерактив дасгал
+            </span>
+            <h1 className="section-title">4-7-8 амьсгалын техник</h1>
+            <p className="section-description">
+              Энэ дасгал нь мэдрэлийн системийг тайвшруулна. Хамар чихээрээ 4
+              сек амьсгал аваад, 7 сек амьсгалаа барьж, дараа нь амаараа 8 сек
+              турш сүүдэр мэт алгуурхан гаргана.
+            </p>
+            <div className="btn-group" style={{ marginTop: "2rem" }}>
+              <button className="cta-btn" onClick={startBreathing}>
+                {breathingState === "idle"
+                  ? "Дасгалыг эхлүүлэх"
+                  : "Дасгалыг зогсоох"}
+              </button>
+            </div>
+          </div>
+
+          <div className="section-visual-container">
+            <div className="breathing-box">
+              <div className="breathing-bubble-outer">
+                <motion.div
+                  className="breathing-bubble"
+                  animate={{
+                    scale:
+                      breathingState === "inhale"
+                        ? 1.45
+                        : breathingState === "exhale"
+                          ? 0.95
+                          : breathingState === "hold"
+                            ? 1.45
+                            : 1.0,
+                    boxShadow:
+                      breathingState === "hold"
+                        ? "0 0 70px rgba(6, 182, 212, 0.7)"
+                        : breathingState === "inhale"
+                          ? "0 0 50px rgba(168, 85, 247, 0.5)"
+                          : "0 0 30px rgba(99, 102, 241, 0.3)",
+                  }}
+                  transition={{
+                    duration:
+                      breathingState === "inhale"
+                        ? 4
+                        : breathingState === "hold"
+                          ? 7
+                          : breathingState === "exhale"
+                            ? 8
+                            : 1,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <div className="breathing-bubble-inner"></div>
+                  <span className="breathing-text">
+                    {breathingState === "idle" && "АМЬСГАЛ"}
+                    {breathingState === "inhale" && "АВАХ"}
+                    {breathingState === "hold" && "БАРЬ"}
+                    {breathingState === "exhale" && "ГАРГА"}
+                  </span>
+                </motion.div>
+              </div>
+
+              <div className="breathing-instruction">
+                {breathingState === "idle" &&
+                  "Хэмнэлийг дагаж дасгал хийнэ үү."}
+                {breathingState === "inhale" &&
+                  "Гүнзгий амьсгал аваарай... (4 секунд)"}
+                {breathingState === "hold" &&
+                  "Амьсгалаа дотроо барина уу... (7 секунд)"}
+                {breathingState === "exhale" &&
+                  "Амаараа алгуур гаргана... (8 секунд)"}
+              </div>
+
+              {breathingState !== "idle" && (
+                <div className="breathing-timer">{breathTimer} сек</div>
+              )}
+            </div>
+          </div>
+        </div>
+        {renderPageFooter()}
+      </div>
+    </motion.div>
+  );
+}
+
+export default App;
