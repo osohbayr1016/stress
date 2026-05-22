@@ -211,7 +211,6 @@ function App() {
       <nav className="navbar">
         <div className="nav-logo" onClick={() => navigateTo("/")}>
           <Brain size={26} />
-          <span>STRESS.mn Академи</span>
         </div>
         <div className="nav-links">
           <button
