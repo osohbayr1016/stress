@@ -1389,3 +1389,597 @@
 .dc-arrow {
   transition: transform 0.2s, color 0.2s;
 }
+
+/* Redesigned Home Hero & Course Hub styles */
+.hero-cta-group {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.primary-hero-btn {
+  padding: 1.1rem 2.8rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.35);
+  animation: pulse-glow 3s infinite alternate ease-in-out;
+}
+
+.primary-hero-btn:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 15px 35px rgba(6, 182, 212, 0.5);
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+  }
+  100% {
+    box-shadow: 0 10px 35px rgba(99, 102, 241, 0.5);
+  }
+}
+
+/* Course Dashboard Grid (Assessment Quiz & Certificate Locker) */
+.course-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.25rem;
+  width: 100%;
+  margin: 0 auto 4rem;
+  max-width: 1200px;
+}
+
+@media (max-width: 900px) {
+  .course-hub-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.hub-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  text-align: left;
+}
+
+.hub-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 25px 50px -10px var(--primary-glow);
+}
+
+.hub-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 1rem;
+}
+
+.hub-card-header h3 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.2px;
+}
+
+.hub-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.hub-card-body p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Quiz Controls inside Hub Card */
+.quiz-active-body {
+  gap: 1rem;
+}
+
+.quiz-progress-lbl {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.quiz-question-txt {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.quiz-opt-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  padding: 0.9rem 1.25rem;
+  border-radius: 14px;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+.quiz-opt-btn:hover {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: var(--primary);
+  transform: translateX(4px);
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+}
+
+.quiz-opt-btn:active {
+  transform: scale(0.98);
+}
+
+/* Quiz Results Badge and Recommendations */
+.result-badge-container {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.result-level-badge {
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.result-level-badge.high-stress {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+}
+
+.result-level-badge.mid-stress {
+  background: rgba(234, 179, 8, 0.18);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.15);
+}
+
+.result-level-badge.low-stress {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+}
+
+.quiz-result-desc {
+  font-size: 0.95rem !important;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.quiz-recommendation-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.rec-lbl {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.rec-btn-link {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.rec-btn-link:hover {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+/* Certificate Locker & Progress Hub elements */
+.cert-progress-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.cert-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.cert-progress-bar-bg {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.cert-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  border-radius: 5px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.cert-locked-msg {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border);
+  padding: 1.25rem;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.cert-locked-msg p {
+  font-size: 0.88rem !important;
+  line-height: 1.5;
+}
+
+.cert-unlocked-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.unlocked-lbl {
+  color: #10b981 !important;
+  font-weight: 700 !important;
+}
+
+.name-input-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.student-name-input {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  transition: all 0.3s;
+}
+
+.student-name-input:focus {
+  outline: none;
+  background: rgba(99, 102, 241, 0.05);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+.student-name-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* Syllabus & Curriculum Section Tagging */
+.syllabus-header-section {
+  text-align: center;
+  max-width: 700px;
+  margin: 3rem auto 2.5rem;
+}
+
+.syllabus-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.syllabus-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Instructors Profiles */
+.instructors-section {
+  margin-top: 5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 4rem;
+}
+
+.ins-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+.ins-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.ins-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .ins-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.ins-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s;
+}
+
+.ins-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(6, 182, 212, 0.25);
+  box-shadow: 0 20px 40px -10px var(--accent-glow);
+}
+
+.ins-avatar-placeholder {
+  background: linear-gradient(135deg, var(--primary-glow) 0%, var(--accent-glow) 100%);
+  color: var(--accent);
+  padding: 1.25rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(6, 182, 212, 0.15);
+}
+
+.ins-info {
+  flex: 1;
+  text-align: left;
+}
+
+.ins-info h4 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.ins-role {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+}
+
+.ins-bio {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Beautiful Modal Lightbox and Certificate printable card */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 10, 0.75);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.certificate-modal-content {
+  position: relative;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.8);
+  padding: 1.5rem;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.certificate-frame {
+  background: #07090e;
+  border-radius: 20px;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.cert-border-double {
+  border: 4px double #d4af37; /* Royal gold border */
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  background: radial-gradient(circle, rgba(13, 17, 28, 0.8) 0%, rgba(5, 7, 12, 0.95) 100%);
+  position: relative;
+}
+
+.cert-body-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cert-medal-icon {
+  color: #d4af37;
+  filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3));
+  margin-bottom: 1.5rem;
+}
+
+.cert-header h2 {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.cert-sub {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #d4af37;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.cert-content {
+  max-width: 580px;
+  margin-bottom: 3rem;
+}
+
+.cert-txt-light {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.cert-student-name {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 1.5rem 0;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+  display: inline-block;
+  padding-bottom: 0.5rem;
+  min-width: 250px;
+  letter-spacing: 0.5px;
+}
+
+.cert-footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 580px;
+  margin-top: 1rem;
+}
+
+.cert-sign, .cert-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+}
+
+.sign-line {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin-bottom: 0.75rem;
+}
+
+.cert-footer p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.cert-footer span {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+}
